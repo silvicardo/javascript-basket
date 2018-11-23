@@ -119,7 +119,9 @@ function generaOggettoStatistiche() {
     falli : generaNumeroCasualeTra(0, 5) //Falli
   };
 
+  //Creazione restanti parametri delle statistiche
   var statisticaCreata = false;
+
   while (statisticaCreata != true) {
     //Genero Punteggio Totale Casuale
     statistiche.punteggioPartita = generaNumeroCasualeTra(20,80);
@@ -127,36 +129,24 @@ function generaOggettoStatistiche() {
     //Genero una percentuale tiri da 3 riuscita
     var percentualeTiriDa3Casuale = generaNumeroCasualeTra(30,60);
 
-    //Calcolo punti fatti con tiri da 3 ad Intero
+    //Calcolo punti fatti con tiri da 3 e 2 ad Intero
     var puntiTiriDa3ConPerScelta = parseInt(statistiche.punteggioPartita / 100 * percentualeTiriDa3Casuale);
     var tiriDa2Sottratti = statistiche.punteggioPartita - puntiTiriDa3ConPerScelta;
 
-    // console.log('Punteggio da tiri da 3 estratti : ' + puntiTiriDa3ConPerScelta);
-
-    if (puntiTiriDa3ConPerScelta % 3 != 0) {
-      // console.log(puntiTiriDa3ConPerScelta + ' non divisibile per 3');
-      // console.log('nuovaEstrazione');
-    } else {
-      // console.log('Punteggio da tiri da 2 estratti : ' + tiriDa2Sottratti);
-      if (tiriDa2Sottratti % 2 != 0) {
-        // console.log(tiriDa2Sottratti + ' non divisibile per 2');
-        // console.log('nuovaEstrazione');
-      } else {
-        // console.log('passato');
-        statistiche.tiriDa3Riusciti = puntiTiriDa3ConPerScelta / 3;
-        statistiche.tiriDa2Riusciti = tiriDa2Sottratti / 2;
-        statistiche.puntiConTiriDa3Riusciti = puntiTiriDa3ConPerScelta;
-        statistiche.puntiConTiriDa2Riusciti = tiriDa2Sottratti ;
-        statistiche.percentualeTiriDa3InPartita = percentualeTiriDa3Casuale + '%';
-        statistiche.percentualeTiriDa2InPartita = (100 - percentualeTiriDa3Casuale) + '%';
-
-        // console.log('percentuale tiri da 3 in partita: ' + statistiche.percentualeTiriDa3InPartita + '%');
-        // console.log('percentuale tiri da 2 in partita: ' + statistiche.percentualeTiriDa2InPartita + '%');
+    if (puntiTiriDa3ConPerScelta % 3 == 0) {
+      if (tiriDa2Sottratti % 2 == 0) {
         statisticaCreata = true;
-        // console.log(statistiche);
       }
     }
   }
+
+  //Assegnazione parametri generati
+  statistiche.tiriDa3Riusciti = puntiTiriDa3ConPerScelta / 3;
+  statistiche.tiriDa2Riusciti = tiriDa2Sottratti / 2;
+  statistiche.puntiConTiriDa3Riusciti = puntiTiriDa3ConPerScelta;
+  statistiche.puntiConTiriDa2Riusciti = tiriDa2Sottratti ;
+  statistiche.percentualeTiriDa3InPartita = percentualeTiriDa3Casuale + '%';
+  statistiche.percentualeTiriDa2InPartita = (100 - percentualeTiriDa3Casuale) + '%';
 
   return statistiche;
 }
