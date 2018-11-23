@@ -16,12 +16,16 @@ all’utente di inserire un Codice Giocatore e il programma
 restituisce le statistiche.
 */
 
-var databaseGiocatori = generaDatabaseGiocatori(10);
+// var databaseGiocatori = generaDatabaseGiocatori(10);
 
 //GESTISCI UI
 
-interrogaIlDatabasePerId(parseInt(prompt('Digita id Giocatore desiderato')));
+// interrogaIlDatabasePerId(parseInt(prompt('Digita id Giocatore desiderato')));
 
+//TEST FUNZIONALITA' GENERAZIONE ID CASUALI
+var casuali = [];
+casuali = generaIdCasualiDifferentiPer(10);
+console.log(casuali);
 
 // FUNZIONI
 
@@ -73,7 +77,30 @@ function generaDatabaseGiocatori(nrGiocatori) {
 
 function generaIdCasualiDifferentiPer(totaleId){
 
+  var arrayId = [];
 
+  while (arrayId.length <= totaleId) {
+    var numeriCasuali = generaNumeroCasualeTra(100,999);
+    var stringaCasuale = generaStringaConLettereCasuali(3);
+    var idCandidato = stringaCasuale + numeriCasuali;
+    if(arrayId.includes(idCandidato) == false) {
+      arrayId.push(idCandidato);
+    }
+  }
+
+  return arrayId;
+}
+
+function generaStringaConLettereCasuali(numeroCaratteri) {
+  var alfabeto = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","u","v","w","x","y","z"];
+
+  var stringaRisultato = "";
+
+  for (var i = 0; i < numeroCaratteri; i++) {
+    var stringaCasuale = alfabeto[generaNumeroCasualeTra(0, alfabeto.length - 1)];
+    stringaRisultato += stringaCasuale.toUpperCase();
+  }
+  return stringaRisultato;
 }
 
 function generaNuovoOggettoGiocatoreRandomcon(id) {
