@@ -20,45 +20,53 @@ restituisce le statistiche.
 //STATISTICHE PER GIOCATORE DINAMICI
 var databaseGiocatori = generaDatabaseGiocatori(10);
 console.log(databaseGiocatori);
-//GESTISCI UI
 
-// interrogaIlDatabasePerId(parseInt(prompt('Digita id Giocatore desiderato')));
+//GESTISCI UI
+setTimeout(function (){
+
+  // Something you want delayed.
+  interroga(databaseGiocatori, prompt('Digita id Giocatore desiderato'));
+}, 3000);
 
 // FUNZIONI
 
-function interrogaIlDatabasePerId(id) {
+function interroga(database, id) {
 
     //Da inserire eventuale validazione
 
-    var risultatoQuery = databaseContiene(id);
-    if (risultatoQuery == false) {
+    var risultatoQuery = databaseContiene(database, id);
+    console.log(risultatoQuery);
+    if (risultatoQuery == -1) {
       stampaASchermoErrore();
     } else {
-      stampaASchermoGiocatoreDa(id);
+      stampaASchermoGiocatoreDa(risultatoQuery, database);
     }
 }
 
 function stampaASchermoErrore() {
-  alert('Nessun Giocatore trovato con questo id');
+  alert('Nessun Giocatore trovato con questo id.');
 }
 
-function stampaASchermoGiocatoreDa(id) {
+function stampaASchermoGiocatoreDa(indice, database) {
 
-  //Utilizzare for in per stampare tutte le statistiche
-}
+  var giocatore = database[indice];
 
-function databaseContiene(id) {
+  console.log(giocatore.id);
 
-  var trovato = false;
-  var indiceRicerca = 0;
-  while (trovato == false || database[indiceRicerca] < database.length) {
-    for (var chiave in database[i]){
-      if (chiave == 'id' && database.includes(database[i][chiave])){
-        trovato = true;
-      }
-    }
+  for (var statKey in giocatore.statistiche) {
+    console.log(giocatore.statistiche[statKey]);
   }
 
+}
+
+function databaseContiene(database, id) {
+
+  for (var i = 0; i < database.length; i++) {
+    if (database[i]['id'] == id) {
+      return i;
+      }
+    }
+  return -1;
 }
 
 function generaDatabaseGiocatori(nrGiocatori) {
