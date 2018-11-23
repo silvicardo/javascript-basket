@@ -22,10 +22,10 @@ restituisce le statistiche.
 
 // interrogaIlDatabasePerId(parseInt(prompt('Digita id Giocatore desiderato')));
 
-//TEST FUNZIONALITA' GENERAZIONE ID CASUALI
-var casuali = [];
-casuali = generaIdCasualiDifferentiPer(10);
-console.log(casuali);
+//TEST FUNZIONALITA' CREAZIONE DATABASE
+var databaseGiocatori = generaDatabaseGiocatori(10);
+
+console.log(databaseGiocatori);
 
 // FUNZIONI
 
@@ -69,17 +69,17 @@ function generaDatabaseGiocatori(nrGiocatori) {
   var arrayId = generaIdCasualiDifferentiPer(nrGiocatori);
 
   for (var i = 0; i < arrayId.length; i++) {
-    arrayGiocatori[i] = generaNuovoOggettoGiocatoreRandomcon(arrayId[i]);
+    arrayGiocatori.push(generaNuovoOggettoGiocatoreRandomcon(arrayId[i]));
   }
 
   return arrayGiocatori;
 }
 
-function generaIdCasualiDifferentiPer(totaleId){
+function generaIdCasualiDifferentiPer(totaleId) {
 
   var arrayId = [];
 
-  while (arrayId.length <= totaleId) {
+  while (arrayId.length <= totaleId - 1 ) {
     var numeriCasuali = generaNumeroCasualeTra(100,999);
     var stringaCasuale = generaStringaConLettereCasuali(3);
     var idCandidato = stringaCasuale + numeriCasuali;
@@ -105,5 +105,15 @@ function generaStringaConLettereCasuali(numeroCaratteri) {
 
 function generaNuovoOggettoGiocatoreRandomcon(id) {
 
+  var nuovoGiocatore = {
+    id: id,
+    puntiFatti: 0, //Numero di punti fatti
+    rimbalzi : 0, //Numero di rimbalzi
+    falli : 0, //Falli
+    rapportoTiriDa2Segnati: 0, //Percentuale di successo per tiri da 2 punti
+    rapportoTiriDa3Segnati: 0, //Percentuale di successo per da 3 punti
+  }
+
+  return nuovoGiocatore;
 
 }
