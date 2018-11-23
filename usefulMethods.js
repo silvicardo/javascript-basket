@@ -1,10 +1,6 @@
 /* USEFUL METHODS */
 
 
-
-
-
-
 //Numbers and Arrays
 
 function generaNumeroCasualeTra(min, max) {

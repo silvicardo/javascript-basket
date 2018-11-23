@@ -16,16 +16,13 @@ all’utente di inserire un Codice Giocatore e il programma
 restituisce le statistiche.
 */
 
-// var databaseGiocatori = generaDatabaseGiocatori(10);
-
+//TEST FUNZIONALITA' CREAZIONE DATABASE CON ID E
+//STATISTICHE PER GIOCATORE DINAMICI
+var databaseGiocatori = generaDatabaseGiocatori(10);
+console.log(databaseGiocatori);
 //GESTISCI UI
 
 // interrogaIlDatabasePerId(parseInt(prompt('Digita id Giocatore desiderato')));
-
-//TEST FUNZIONALITA' CREAZIONE DATABASE
-var databaseGiocatori = generaDatabaseGiocatori(10);
-
-console.log(databaseGiocatori);
 
 // FUNZIONI
 
@@ -66,10 +63,11 @@ function databaseContiene(id) {
 
 function generaDatabaseGiocatori(nrGiocatori) {
   var arrayGiocatori = [];
+
   var arrayId = generaIdCasualiDifferentiPer(nrGiocatori);
 
   for (var i = 0; i < arrayId.length; i++) {
-    arrayGiocatori.push(generaNuovoOggettoGiocatoreRandomcon(arrayId[i]));
+    arrayGiocatori.push(generaNuovoOggettoGiocatoreRandomCon(arrayId[i]));
   }
 
   return arrayGiocatori;
@@ -103,17 +101,62 @@ function generaStringaConLettereCasuali(numeroCaratteri) {
   return stringaRisultato;
 }
 
-function generaNuovoOggettoGiocatoreRandomcon(id) {
+function generaNuovoOggettoGiocatoreRandomCon(id) {
 
   var nuovoGiocatore = {
     id: id,
-    puntiFatti: 0, //Numero di punti fatti
-    rimbalzi : 0, //Numero di rimbalzi
-    falli : 0, //Falli
-    rapportoTiriDa2Segnati: 0, //Percentuale di successo per tiri da 2 punti
-    rapportoTiriDa3Segnati: 0, //Percentuale di successo per da 3 punti
   }
 
-  return nuovoGiocatore;
+  nuovoGiocatore.statistiche = generaOggettoStatistiche();
 
+  return nuovoGiocatore;
+}
+
+function generaOggettoStatistiche() {
+
+  var statistiche = {
+    rimbalzi : generaNumeroCasualeTra(1,30), //Numero di rimbalzi
+    falli : generaNumeroCasualeTra(0, 5) //Falli
+  };
+
+  var statisticaCreata = false;
+  while (statisticaCreata != true) {
+    //Genero Punteggio Totale Casuale
+    statistiche.punteggioPartita = generaNumeroCasualeTra(20,80);
+
+    //Genero una percentuale tiri da 3 riuscita
+    var percentualeTiriDa3Casuale = generaNumeroCasualeTra(30,60);
+
+    //Calcolo punti fatti con tiri da 3 ad Intero
+    var puntiTiriDa3ConPerScelta = parseInt(statistiche.punteggioPartita / 100 * percentualeTiriDa3Casuale);
+    var tiriDa2Sottratti = statistiche.punteggioPartita - puntiTiriDa3ConPerScelta;
+
+    // console.log('Punteggio da tiri da 3 estratti : ' + puntiTiriDa3ConPerScelta);
+
+    if (puntiTiriDa3ConPerScelta % 3 != 0) {
+      // console.log(puntiTiriDa3ConPerScelta + ' non divisibile per 3');
+      // console.log('nuovaEstrazione');
+    } else {
+      // console.log('Punteggio da tiri da 2 estratti : ' + tiriDa2Sottratti);
+      if (tiriDa2Sottratti % 2 != 0) {
+        // console.log(tiriDa2Sottratti + ' non divisibile per 2');
+        // console.log('nuovaEstrazione');
+      } else {
+        // console.log('passato');
+        statistiche.tiriDa3Riusciti = puntiTiriDa3ConPerScelta / 3;
+        statistiche.tiriDa2Riusciti = tiriDa2Sottratti / 2;
+        statistiche.puntiConTiriDa3Riusciti = puntiTiriDa3ConPerScelta;
+        statistiche.puntiConTiriDa2Riusciti = tiriDa2Sottratti ;
+        statistiche.percentualeTiriDa3InPartita = percentualeTiriDa3Casuale + '%';
+        statistiche.percentualeTiriDa2InPartita = (100 - percentualeTiriDa3Casuale) + '%';
+
+        // console.log('percentuale tiri da 3 in partita: ' + statistiche.percentualeTiriDa3InPartita + '%');
+        // console.log('percentuale tiri da 2 in partita: ' + statistiche.percentualeTiriDa2InPartita + '%');
+        statisticaCreata = true;
+        // console.log(statistiche);
+      }
+    }
+  }
+
+  return statistiche;
 }
