@@ -16,57 +16,58 @@ all’utente di inserire un Codice Giocatore e il programma
 restituisce le statistiche.
 */
 
-//TEST FUNZIONALITA' CREAZIONE DATABASE CON ID E
-//STATISTICHE PER GIOCATORE DINAMICI
-var databaseGiocatori = generaDatabaseGiocatori(10);
-console.log(databaseGiocatori);
+//PROGRAMMA COMPLETO CON RICERCA TRAMITE prompt
 
-//GESTISCI UI
-setTimeout(function (){
+var staMostrandoRisultato = false;
 
-  // Something you want delayed.
-  interroga(databaseGiocatori, prompt('Digita id Giocatore desiderato'));
-}, 3000);
+gestisciElementiHTMLDiRicerca();
+
+var databaseGiocatori = generaDatabaseGiocatori(100);
+//console.log(databaseGiocatori);
+
+caricaUIListaGiocatoriDa(databaseGiocatori);
 
 // FUNZIONI
 
-function interroga(database, id) {
-
-    //Da inserire eventuale validazione
-
-    var risultatoQuery = databaseContiene(database, id);
-    console.log(risultatoQuery);
-    if (risultatoQuery == -1) {
-      stampaASchermoErrore();
-    } else {
-      stampaASchermoGiocatoreDa(risultatoQuery, database);
-    }
+function gestisciElementiHTMLDiRicerca() {
+  console.log(staMostrandoRisultato);
+  if (!staMostrandoRisultato) {
+    document.getElementsByClassName('searchAgain')[0].style.display = 'none';
+    document.getElementsByClassName('searchBar')[0].style.display = 'flex';
+  } else {
+    document.getElementsByClassName('searchAgain')[0].style.display = 'flex';
+    document.getElementsByClassName('searchBar')[0].style.display = 'none';
+  }
 }
 
-function stampaASchermoErrore() {
-  alert('Nessun Giocatore trovato con questo id.');
+function caricaUIListaGiocatoriDa(databaseGiocatori) {
+  document.getElementById('db').innerHTML = '';
+
+  for (var i = 0; i < databaseGiocatori.length; i++) {
+    generaCard(databaseGiocatori[i]);
+  }
 }
 
-function stampaASchermoGiocatoreDa(indice, database) {
+function gestisciInterazioneControlliRicerca() {
+  if (staMostrandoRisultato) {
+    staMostrandoRisultato = !staMostrandoRisultato;
+    gestisciElementiHTMLDiRicerca();
+    caricaUIListaGiocatoriDa(databaseGiocatori);
+  } else {
+    interroga(databaseGiocatori, (prompt('Digita id Giocatore desiderato')));
+  }
+}
 
-  var giocatore = database[indice];
+function generaCard(giocatore) {
+  var cardBaseHTML = '<div class="player_card"><div class="card_header"><div class="player_id"><h2 class="">ID GIOCATORE: ' + giocatore.id + '</h2></div></div><div class="card_body"><ul class="player_stats player_' + giocatore.id + '"></ul></div></div>';
+  document.getElementById('db').innerHTML += cardBaseHTML;
 
-  console.log(giocatore.id);
+  var listaStatistiche = document.getElementsByClassName('player_' + giocatore.id)[0];
 
-  for (var statKey in giocatore.statistiche) {
-    console.log(giocatore.statistiche[statKey]);
+  for (var key in giocatore.statistiche) {
+    listaStatistiche.innerHTML += '<li><span class="stat_key">' + key + ' :</span> ' + giocatore.statistiche[key] + '</li>';
   }
 
-}
-
-function databaseContiene(database, id) {
-
-  for (var i = 0; i < database.length; i++) {
-    if (database[i]['id'] == id) {
-      return i;
-      }
-    }
-  return -1;
 }
 
 function generaDatabaseGiocatori(nrGiocatori) {
@@ -81,15 +82,61 @@ function generaDatabaseGiocatori(nrGiocatori) {
   return arrayGiocatori;
 }
 
+function interroga(database, id) {
+
+  if (id == '' || id == null) {
+    alert('Input non valido');
+    return;
+  }
+
+  var idAdattato = id.toUpperCase();
+
+  var risultatoQuery = databaseContiene(database, idAdattato);
+  console.log(risultatoQuery);
+  if (risultatoQuery == -1) {
+    stampaASchermoErrore();
+  } else {
+    stampaASchermoGiocatoreDa(risultatoQuery, database);
+    staMostrandoRisultato = true;
+    gestisciElementiHTMLDiRicerca();
+
+  }
+}
+
+function stampaASchermoErrore() {
+  alert('Nessun Giocatore trovato con questo id.');
+}
+
+function stampaASchermoGiocatoreDa(indice, database) {
+
+  document.getElementById('db').innerHTML = '';
+  alert('giocatore trovato');
+  var giocatore = database[indice];
+  console.log();
+  generaCard(database[indice]);
+
+}
+
+function databaseContiene(database, id) {
+
+  for (var i = 0; i < database.length; i++) {
+    if (database[i].id == id) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
 function generaIdCasualiDifferentiPer(totaleId) {
 
   var arrayId = [];
 
-  while (arrayId.length <= totaleId - 1 ) {
-    var numeriCasuali = generaNumeroCasualeTra(100,999);
+  while (arrayId.length <= totaleId - 1) {
+    var numeriCasuali = generaNumeroCasualeTra(100, 999);
     var stringaCasuale = generaStringaConLettereCasuali(3);
     var idCandidato = stringaCasuale + numeriCasuali;
-    if(arrayId.includes(idCandidato) == false) {
+    if (arrayId.includes(idCandidato) == false) {
       arrayId.push(idCandidato);
     }
   }
@@ -113,7 +160,7 @@ function generaNuovoOggettoGiocatoreRandomCon(id) {
 
   var nuovoGiocatore = {
     id: id,
-  }
+  };
 
   nuovoGiocatore.statistiche = generaOggettoStatistiche();
 
